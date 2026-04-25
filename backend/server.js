@@ -10,11 +10,14 @@ app.use(express.json());
 
 // 🔥 TEMP: no auth
 const verifyToken = (req, res, next) => {
-  req.user = { uid: "demo-user" }; // dummy user
+  req.user = { uid: "demo-user" };
   next();
 };
 
-// 🧠 PREDICT (NO DB)
+// 🔥 TEMP DATABASE (IN MEMORY)
+let userData = {};
+
+// 🧠 PREDICT (SAVE DATA)
 app.post("/predict", verifyToken, async (req, res) => {
   const { hours, attendance, marks } = req.body;
 
@@ -24,21 +27,38 @@ app.post("/predict", verifyToken, async (req, res) => {
   );
 
   const result = {
+    id: Date.now(),
     score,
     grade: score > 80 ? "A" : score > 60 ? "B" : "C",
     date: new Date().toISOString(),
   };
 
+  const uid = req.user.uid;
+
+  if (!userData[uid]) {
+    userData[uid] = [];
+  }
+
+  userData[uid].push(result);
+
   res.json(result);
 });
 
-// 📜 HISTORY (dummy)
+// 📜 HISTORY (RETURN SAVED DATA)
 app.get("/history", verifyToken, async (req, res) => {
-  res.json([]);
+  const uid = req.user.uid;
+  res.json(userData[uid] || []);
 });
 
-// 🗑️ DELETE (dummy)
+// 🗑️ DELETE
 app.delete("/prediction/:id", verifyToken, async (req, res) => {
+  const uid = req.user.uid;
+  const id = parseInt(req.params.id);
+
+  if (userData[uid]) {
+    userData[uid] = userData[uid].filter(item => item.id !== id);
+  }
+
   res.json({ success: true });
 });
 
@@ -51,7 +71,7 @@ app.get("/api", (req, res) => {
   res.json({ message: "Backend connected successfully 🚀" });
 });
 
-// 🔥 PORT FIX
+// 🔥 PORT
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
