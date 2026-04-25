@@ -19,6 +19,9 @@ import {
 
 const COLORS = ["#22c55e", "#3b82f6", "#ef4444"];
 
+// 🔥 Backend URL
+const API = "https://ai-predictor-1-syk3.onrender.com";
+
 const History = () => {
   const [history, setHistory] = useState([]);
   const [search, setSearch] = useState("");
@@ -28,9 +31,10 @@ const History = () => {
   const fetchHistory = async () => {
     try {
       if (!auth.currentUser) return;
+
       const token = await auth.currentUser.getIdToken();
 
-      const res = await axios.get("/history", {
+      const res = await axios.get(`${API}/history`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -64,7 +68,7 @@ const History = () => {
     try {
       const token = await auth.currentUser.getIdToken();
 
-      await axios.delete(`/prediction/${id}`, {
+      await axios.delete(`${API}/prediction/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -74,10 +78,6 @@ const History = () => {
       toast.error("Delete failed ❌");
     }
   };
-
-  // =========================
-  // 📊 ANALYTICS LOGIC
-  // =========================
 
   // 📈 Line Chart
   const lineData = filtered.map((item, i) => ({
@@ -93,7 +93,7 @@ const History = () => {
     value: gradeCount[k],
   }));
 
-  // 📊 Avg Score (Bar Chart)
+  // 📊 Avg Score
   const avgScore =
     filtered.length > 0
       ? Math.round(
@@ -104,7 +104,7 @@ const History = () => {
 
   const barData = [{ name: "Average", score: avgScore }];
 
-  // 🧠 Improvement Insight
+  // 🧠 Improvement
   const improvement =
     filtered.length >= 2
       ? (
@@ -114,7 +114,7 @@ const History = () => {
         ).toFixed(1)
       : 0;
 
-  // 🏆 Rank System
+  // 🏆 Rank
   const getRank = () => {
     if (avgScore >= 85) return "🏆 Top Performer";
     if (avgScore >= 70) return "🥈 Good Performer";
@@ -127,7 +127,7 @@ const History = () => {
         📜 Prediction History
       </h1>
 
-      {/* 🔍 SEARCH + SORT */}
+      {/* 🔍 SEARCH */}
       <div className="max-w-4xl mx-auto flex gap-4 mb-6 flex-wrap">
         <input
           type="text"
@@ -150,15 +150,11 @@ const History = () => {
       {/* 🧠 INSIGHTS */}
       {filtered.length > 0 && (
         <div className="max-w-5xl mx-auto mb-6 bg-white p-4 rounded-xl shadow text-center">
-          <p className="text-lg">
-            📊 Average Score: <b>{avgScore}%</b>
-          </p>
+          <p>📊 Average Score: <b>{avgScore}%</b></p>
           <p>
             🧠 Improvement:{" "}
             <b>
-              {improvement > 0
-                ? `+${improvement}% 📈`
-                : `${improvement}%`}
+              {improvement > 0 ? `+${improvement}% 📈` : `${improvement}%`}
             </b>
           </p>
           <p>🏆 Rank: <b>{getRank()}</b></p>
@@ -169,7 +165,6 @@ const History = () => {
       {filtered.length > 0 && (
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mb-10">
 
-          {/* 📈 Line */}
           <div className="bg-white p-4 rounded-xl shadow">
             <h2 className="text-center font-bold mb-2">Trend</h2>
             <ResponsiveContainer width="100%" height={200}>
@@ -182,7 +177,6 @@ const History = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* 🥧 Pie */}
           <div className="bg-white p-4 rounded-xl shadow">
             <h2 className="text-center font-bold mb-2">Grades</h2>
             <ResponsiveContainer width="100%" height={200}>
@@ -197,7 +191,6 @@ const History = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* 📊 Bar */}
           <div className="bg-white p-4 rounded-xl shadow">
             <h2 className="text-center font-bold mb-2">Average</h2>
             <ResponsiveContainer width="100%" height={200}>

@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import InputForm from "../components/InputForm";
-import Loader from "../components/Loader";
+import InputForm from "../Components/InputForm";
+import Loader from "../Components/Loader";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { auth } from "../firebase";
+
+// 🔥 Backend URL
+const API = "https://ai-predictor-1-syk3.onrender.com";
 
 const Predict = () => {
   const [loading, setLoading] = useState(false);
@@ -25,9 +28,9 @@ const Predict = () => {
       // 🔥 Token
       const token = await auth.currentUser.getIdToken();
 
-      // 🔥 API CALL (proxy use karo)
+      // 🔥 API CALL (LIVE BACKEND)
       const res = await axios.post(
-        "/predict",
+        `${API}/predict`,
         {
           hours: Number(data.hours),
           attendance: Number(data.attendance),

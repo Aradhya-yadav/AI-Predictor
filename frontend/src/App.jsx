@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 // 🔥 Firebase
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
 import History from "./pages/History";
 import Home from "./pages/Home";
 import Predict from "./pages/Predict";
@@ -18,7 +18,7 @@ import Login from "./pages/Login";
 import Result from "./pages/Result";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup"; // 🔥 missing था
-import Protected from "./components/Protected";
+import Protected from "./Components/Protected";
 
 // 🔥 Scroll to top
 function ScrollToTop() {
