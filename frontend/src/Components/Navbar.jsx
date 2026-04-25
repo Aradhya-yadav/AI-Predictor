@@ -2,11 +2,22 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth"; // ✅ ADDED
 
 const Navbar = () => {
-  const user = auth.currentUser; // 🔥 FIXED
   const location = useLocation();
   const navigate = useNavigate();
+
+  // ✅ FIXED (reactive user)
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -149,7 +160,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* 🔥 MOBILE MENU */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -169,7 +180,6 @@ const Navbar = () => {
               {dark ? "🌙 Dark" : "☀️ Light"}
             </button>
 
-            {/* 🔥 FIXED LOGIN UI */}
             {!user ? (
               <>
                 <Link
@@ -199,7 +209,6 @@ const Navbar = () => {
                 </button>
               </>
             )}
-
           </motion.div>
         )}
       </AnimatePresence>
