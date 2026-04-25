@@ -20,28 +20,31 @@ const Dashboard = () => {
 
   // 🔥 FETCH FROM BACKEND
   const loadData = async () => {
-    try {
-      if (!auth.currentUser) return;
+  try {
+    if (!auth.currentUser) return;
 
-      const token = await auth.currentUser.getIdToken();
+    const token = await auth.currentUser.getIdToken();
 
-      const res = await axios.get("/history", {
+    const res = await axios.get(
+      "https://ai-predictor-1-syk3.onrender.com/history",
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }
+    );
 
-      const formatted = (res.data || []).map((item, index) => ({
-        name: `Test ${index + 1}`,
-        ...item,
-      }));
+    const formatted = (res.data || []).map((item, index) => ({
+      name: `Test ${index + 1}`,
+      ...item,
+    }));
 
-      setHistory(formatted);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to load data ❌");
-    }
-  };
+    setHistory(formatted);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to load data ❌");
+  }
+};
 
   useEffect(() => {
     loadData();
