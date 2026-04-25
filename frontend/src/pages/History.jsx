@@ -24,33 +24,49 @@ const History = () => {
   const [history, setHistory] = useState([]);
   const [search, setSearch] = useState("");
   const [sortType, setSortType] = useState("high");
+  const [loading, setLoading] = useState(true);
 
-  // 🔥 FETCH
-  const fetchHistory = async () => {
+  // 🔥 FETCH DATA
+  const fetchHistory = async (user) => {
     try {
-      if (!auth.currentUser) return;
+      setLoading(true);
 
-      const token = await auth.currentUser.getIdToken();
+      const token = await user.getIdToken();
 
       const res = await axios.get(`${API}/history`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      // 🔥 FIX (convert score to number)
       const formatted = (res.data || []).map((item) => ({
-        ...item,
+        id: item.id,
         score: Number(item.score),
+        grade: item.grade,
+        date: item.date,
       }));
 
       setHistory(formatted);
     } catch (err) {
-      console.error(err);
+      console.error("ERROR:", err);
       toast.error("Failed to load history ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
+  // 🔥 FIXED AUTH LISTENER
   useEffect(() => {
-    fetchHistory();
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        fetchHistory(user);
+      } else {
+        setHistory([]);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // 🔍 FILTER + SORT
@@ -63,8 +79,8 @@ const History = () => {
 
     list.sort((a, b) =>
       sortType === "high"
-        ? Number(b.score) - Number(a.score)
-        : Number(a.score) - Number(b.score)
+        ? b.score - a.score
+        : a.score - b.score
     );
 
     return list;
@@ -76,7 +92,9 @@ const History = () => {
       const token = await auth.currentUser.getIdToken();
 
       await axios.delete(`${API}/prediction/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setHistory((prev) => prev.filter((item) => item.id !== id));
@@ -86,50 +104,39 @@ const History = () => {
     }
   };
 
-  // 📈 Line Chart
+  // 📈 LINE DATA
   const lineData = filtered.map((item, i) => ({
     name: `#${i + 1}`,
-    score: Number(item.score),
+    score: item.score,
   }));
 
-  // 🥧 Pie Chart
+  // 🥧 PIE DATA
   const gradeCount = { A: 0, B: 0, C: 0 };
-  filtered.forEach((item) => gradeCount[item.grade]++);
+  filtered.forEach((item) => {
+    if (gradeCount[item.grade] !== undefined) {
+      gradeCount[item.grade]++;
+    }
+  });
+
   const pieData = Object.keys(gradeCount).map((k) => ({
     name: k,
     value: gradeCount[k],
   }));
 
-  // 📊 Avg Score
+  // 📊 AVG
   const avgScore =
     filtered.length > 0
       ? Math.round(
-          filtered.reduce((sum, item) => sum + Number(item.score), 0) /
+          filtered.reduce((sum, item) => sum + item.score, 0) /
             filtered.length
         )
       : 0;
 
   const barData = [{ name: "Average", score: avgScore }];
 
-  // 🧠 Improvement
-  const improvement =
-    filtered.length >= 2
-      ? (
-          ((filtered[0].score - filtered[filtered.length - 1].score) /
-            filtered[filtered.length - 1].score) *
-          100
-        ).toFixed(1)
-      : 0;
-
-  // 🏆 Rank
-  const getRank = () => {
-    if (avgScore >= 85) return "🏆 Top Performer";
-    if (avgScore >= 70) return "🥈 Good Performer";
-    return "🥉 Needs Improvement";
-  };
-
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-900 p-6">
+
       <h1 className="text-3xl font-bold text-center mb-6">
         📜 Prediction History
       </h1>
@@ -153,6 +160,21 @@ const History = () => {
           <option value="low">Low → High</option>
         </select>
       </div>
+
+      {/* ⏳ LOADING */}
+      {loading && (
+        <p className="text-center text-gray-500">
+          Loading... ⏳
+        </p>
+      )}
+
+      {/* ❌ EMPTY */}
+      {!loading && filtered.length === 0 && (
+        <p className="text-center text-gray-500">
+          No history found 📭
+        </p>
+      )}
+
       {/* 📊 CHARTS */}
       {filtered.length > 0 && (
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mb-10">
@@ -164,7 +186,7 @@ const History = () => {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="score" />
+                <Line type="monotone" dataKey="score" stroke="#3b82f6" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -190,7 +212,7 @@ const History = () => {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="score" />
+                <Bar dataKey="score" fill="#22c55e" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -222,6 +244,7 @@ const History = () => {
           </div>
         ))}
       </div>
+
     </div>
   );
 };
