@@ -18,33 +18,37 @@ const Dashboard = () => {
   const [history, setHistory] = useState([]);
   const [user, setUser] = useState(null);
 
-  // 🔥 FETCH FROM BACKEND
+  // 🔥 FETCH DATA
   const loadData = async () => {
-  try {
-    if (!auth.currentUser) return;
+    try {
+      if (!auth.currentUser) return;
 
-    const token = await auth.currentUser.getIdToken();
+      const token = await auth.currentUser.getIdToken();
 
-    const res = await axios.get(
-      "https://ai-predictor-1-syk3.onrender.com/history",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+      const res = await axios.get(
+        "https://ai-predictor-1-syk3.onrender.com/history",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const formatted = (res.data || []).map((item, index) => ({
-      name: `Test ${index + 1}`,
-      ...item,
-    }));
+      // 🔥 FIXED DATA FORMAT
+      const formatted = (res.data || []).map((item, index) => ({
+        name: `Test ${index + 1}`,
+        score: Number(item.score), // 🔥 IMPORTANT
+        grade: item.grade,
+        date: item.date,
+      }));
 
-    setHistory(formatted);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to load data ❌");
-  }
-};
+      setHistory(formatted);
+
+    } catch (err) {
+      console.error("ERROR:", err);
+      toast.error("Failed to load data ❌");
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -55,14 +59,14 @@ const Dashboard = () => {
   const avg =
     history.length > 0
       ? Math.round(
-          history.reduce((a, b) => a + b.score, 0) / history.length
+          history.reduce((a, b) => a + Number(b.score), 0) / history.length
         )
       : 0;
 
   // 🏆 Best Score
   const bestScore =
     history.length > 0
-      ? Math.max(...history.map((i) => i.score))
+      ? Math.max(...history.map((i) => Number(i.score)))
       : 0;
 
   // 🎓 Best Grade

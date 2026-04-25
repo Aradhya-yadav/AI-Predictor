@@ -18,8 +18,6 @@ import {
 } from "recharts";
 
 const COLORS = ["#22c55e", "#3b82f6", "#ef4444"];
-
-// 🔥 Backend URL
 const API = "https://ai-predictor-1-syk3.onrender.com";
 
 const History = () => {
@@ -38,8 +36,15 @@ const History = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setHistory(res.data || []);
-    } catch {
+      // 🔥 FIX (convert score to number)
+      const formatted = (res.data || []).map((item) => ({
+        ...item,
+        score: Number(item.score),
+      }));
+
+      setHistory(formatted);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load history ❌");
     }
   };
@@ -57,7 +62,9 @@ const History = () => {
     );
 
     list.sort((a, b) =>
-      sortType === "high" ? b.score - a.score : a.score - b.score
+      sortType === "high"
+        ? Number(b.score) - Number(a.score)
+        : Number(a.score) - Number(b.score)
     );
 
     return list;
@@ -82,7 +89,7 @@ const History = () => {
   // 📈 Line Chart
   const lineData = filtered.map((item, i) => ({
     name: `#${i + 1}`,
-    score: item.score,
+    score: Number(item.score),
   }));
 
   // 🥧 Pie Chart
@@ -97,7 +104,7 @@ const History = () => {
   const avgScore =
     filtered.length > 0
       ? Math.round(
-          filtered.reduce((sum, item) => sum + item.score, 0) /
+          filtered.reduce((sum, item) => sum + Number(item.score), 0) /
             filtered.length
         )
       : 0;
@@ -146,21 +153,6 @@ const History = () => {
           <option value="low">Low → High</option>
         </select>
       </div>
-
-      {/* 🧠 INSIGHTS */}
-      {filtered.length > 0 && (
-        <div className="max-w-5xl mx-auto mb-6 bg-white p-4 rounded-xl shadow text-center">
-          <p>📊 Average Score: <b>{avgScore}%</b></p>
-          <p>
-            🧠 Improvement:{" "}
-            <b>
-              {improvement > 0 ? `+${improvement}% 📈` : `${improvement}%`}
-            </b>
-          </p>
-          <p>🏆 Rank: <b>{getRank()}</b></p>
-        </div>
-      )}
-
       {/* 📊 CHARTS */}
       {filtered.length > 0 && (
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mb-10">
