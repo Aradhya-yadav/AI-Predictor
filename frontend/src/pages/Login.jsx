@@ -40,14 +40,20 @@ const Login = () => {
       navigate(from);
 
     } catch (err) {
-      if (err.code === "auth/user-not-found") {
+      console.log("Firebase Error:", err.code);
+
+      if (err.code === "auth/invalid-credential") {
+        toast.error("Invalid email or password ❌");
+      } else if (err.code === "auth/user-not-found") {
         toast.error("User not found ❌");
       } else if (err.code === "auth/wrong-password") {
         toast.error("Wrong password ❌");
       } else if (err.code === "auth/invalid-email") {
         toast.error("Invalid email format ❌");
+      } else if (err.code === "auth/too-many-requests") {
+        toast.error("Too many attempts, try later ⏳");
       } else {
-        toast.error("Login failed ❌");
+        toast.error(err.message || "Login failed ❌");
       }
     }
 
@@ -55,8 +61,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-slate-900 dark:to-slate-800 px-4 pt-24 pb-10 overflow-y-auto">
-      
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-slate-900 dark:to-slate-800 px-4">
+
       <motion.form
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,6 +84,7 @@ const Login = () => {
           name="email"
           type="email"
           placeholder="Enter your email"
+          value={data.email}
           onChange={handleChange}
           className="w-full mb-4 p-3 rounded-lg border focus:ring-2 focus:ring-blue-400 outline-none"
         />
@@ -88,6 +95,7 @@ const Login = () => {
             name="password"
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
+            value={data.password}
             onChange={handleChange}
             className="w-full p-3 rounded-lg border focus:ring-2 focus:ring-blue-400 outline-none"
           />
