@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -17,6 +17,27 @@ const Login = () => {
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  // 🔥 FORGOT PASSWORD FUNCTION
+  const handleForgotPassword = async () => {
+    if (!data.email) {
+      toast.error("Please enter your email first ❗");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, data.email.trim());
+      toast.success("Check your email to reset password 📬");
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        toast.error("User not found ❌");
+      } else if (err.code === "auth/invalid-email") {
+        toast.error("Invalid email ❌");
+      } else {
+        toast.error("Something went wrong ❌");
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -108,6 +129,14 @@ const Login = () => {
           </span>
         </div>
 
+        {/* 🔥 FORGOT PASSWORD UI */}
+        <p
+          onClick={handleForgotPassword}
+          className="text-right text-sm text-blue-500 cursor-pointer mb-4 hover:underline"
+        >
+          Forgot Password?
+        </p>
+
         {/* Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -128,7 +157,6 @@ const Login = () => {
             Signup
           </span>
         </p>
-        
 
       </motion.form>
     </div>
