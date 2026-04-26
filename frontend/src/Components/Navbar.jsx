@@ -97,8 +97,7 @@ const Navbar = () => {
             >
               <img
                 src={
-                  user.photoURL ||
-                  "https://ui-avatars.com/api/?name=User"
+                user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || "User"}`
                 }
                 alt="profile"
                 className="w-8 h-8 rounded-full border"

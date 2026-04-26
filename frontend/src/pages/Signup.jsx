@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
+import { updateProfile } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   updateProfile
@@ -51,7 +52,10 @@ const Signup = () => {
         data.email.trim(),
         data.password.trim()
       );
-
+      await updateProfile(userCredential.user, {
+  displayName: data.name,
+  photoURL: `https://ui-avatars.com/api/?name=${data.name}`
+});
       await updateProfile(userCredential.user, {
         displayName: data.name
       });
