@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
-import { updateProfile } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   updateProfile
