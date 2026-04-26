@@ -46,27 +46,36 @@ const Signup = () => {
     setLoading(true);
 
     try {
+      console.log("Signup start");
+
+      // 🔥 CREATE USER
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email.trim(),
         data.password.trim()
       );
+
+      console.log("User created:", userCredential.user);
+
+      // 🔥 UPDATE PROFILE (NAME + PHOTO)
       await updateProfile(userCredential.user, {
-  displayName: data.name,
-  photoURL: `https://ui-avatars.com/api/?name=${data.name}`
-});
-      await updateProfile(userCredential.user, {
-        displayName: data.name
+        displayName: data.name,
+        photoURL: `https://ui-avatars.com/api/?name=${data.name}`
       });
 
       toast.success("Account created 🎉");
+
       navigate("/login");
 
     } catch (err) {
+      console.log("Signup error:", err.code);
+
       if (err.code === "auth/email-already-in-use") {
         toast.error("Email already exists ❌");
       } else if (err.code === "auth/invalid-email") {
         toast.error("Invalid email ❌");
+      } else if (err.code === "auth/weak-password") {
+        toast.error("Weak password ❌");
       } else {
         toast.error("Signup failed ❌");
       }
@@ -148,7 +157,7 @@ const Signup = () => {
           {loading ? "Creating..." : "Signup"}
         </motion.button>
 
-        {/* Login Link */}
+        {/* Login */}
         <p className="text-center mt-4 text-sm text-gray-500">
           Already have an account?{" "}
           <span
@@ -158,7 +167,7 @@ const Signup = () => {
             Login
           </span>
         </p>
-       
+
       </motion.form>
     </div>
   );
