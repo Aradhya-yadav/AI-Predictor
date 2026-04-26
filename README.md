@@ -1,62 +1,46 @@
-# 🎓 AI Student Performance Predictor
+# 🎓 AI Predictor
 
-A full-stack web application that predicts student performance based on study habits and academic data.
+An AI-based web application that predicts student performance based on study habits and academic data.
 
 ---
 
 ## 🚀 Features
 
-- 📊 Predict student performance (Score & Grade)
-- 🔐 User Authentication (Firebase)
-- 📈 Dashboard with analytics
-- 📜 Prediction history with delete option
-- 📄 PDF & Certificate download
-- 🌙 Dark mode support
-- ⚡ Fast & responsive UI
+* 🔐 Authentication (Signup / Login)
+* 📊 Predict student performance
+* 📈 Dashboard with charts
+* 📜 History tracking
+* 👤 Profile management
+* 🌙 Dark mode
+* 📄 Download result PDF & certificate
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-### Frontend
-- React.js
-- Tailwind CSS
-- Framer Motion
-
-### Backend
-- Node.js
-- Express.js
-
-### Database
-- Firebase Realtime Database
-
-### Auth
-- Firebase Authentication
-
----
-
-## 🧠 How It Works
-
-The system calculates student performance using:
-- Study Hours
-- Attendance
-- Previous Marks
-
-It then generates:
-- 🎯 Score (0–100)
-- 🏆 Grade (A / B / C)
-
----
-
-## 📸 Screenshots
-
-(Add screenshots here later)
+* Frontend: React + Tailwind CSS
+* Backend: Node.js + Express
+* Database: Firebase / Realtime DB
+* Auth: Firebase Authentication
+* Charts: Recharts
 
 ---
 
 ## ⚙️ Installation
 
-### 1️⃣ Clone the repo
-
 ```bash
 git clone https://github.com/Aradhya-yadav/AI-Predictor.git
+cd AI-Predictor
+npm install
+npm run dev
+```
+
+---
+
+## 🌐 Live Demo
+
+👉 https://your-vercel-link.vercel.app
+
+## 👨‍💻 Author
+
+Aradhya Yadav
