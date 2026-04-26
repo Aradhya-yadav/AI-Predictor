@@ -1,74 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
-import { reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "firebase/auth";
+import { confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
 import toast from "react-hot-toast";
 
 const ResetPassword = () => {
-  const [oldPass, setOldPass] = useState("");
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   const [newPass, setNewPass] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [validCode, setValidCode] = useState(false);
+
+  const oobCode = searchParams.get("oobCode");
+
+  // 🔍 Verify reset code
+  useEffect(() => {
+    const checkCode = async () => {
+      try {
+        await verifyPasswordResetCode(auth, oobCode);
+        setValidCode(true);
+      } catch (err) {
+        toast.error("Invalid or expired link ❌");
+      }
+    };
+
+    if (oobCode) checkCode();
+  }, [oobCode]);
 
   const handleReset = async () => {
-    try {
-      const user = auth.currentUser;
-
-      if (!user) {
-        toast.error("Login first ❌");
-        return;
-      }
-
-      // 🔐 Re-authenticate
-      const credential = EmailAuthProvider.credential(
-        user.email,
-        oldPass
-      );
-
-      await reauthenticateWithCredential(user, credential);
-
-      // 🔥 Update password
-      await updatePassword(user, newPass);
-
-      toast.success("Password updated successfully 🔐");
-
-    } catch (err) {
-      if (err.code === "auth/wrong-password") {
-        toast.error("Old password incorrect ❌");
-      } else if (err.code === "auth/weak-password") {
-        toast.error("New password too weak ❌");
-      } else {
-        toast.error("Error updating password ❌");
-      }
+    if (!newPass || newPass.length < 6) {
+      toast.error("Password must be at least 6 characters ❗");
+      return;
     }
+
+    setLoading(true);
+
+    try {
+      await confirmPasswordReset(auth, oobCode, newPass);
+
+      toast.success("Password reset successful 🎉");
+
+      navigate("/login");
+    } catch (err) {
+      console.log(err.code);
+      toast.error("Reset failed ❌");
+    }
+
+    setLoading(false);
   };
 
-  return (
-    <div className="min-h-screen flex justify-center items-center">
-      <div className="bg-white p-6 rounded shadow w-80">
+  if (!validCode) {
+    return <div className="text-center mt-20">Checking link...</div>;
+  }
 
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Reset Password 🔐
+  return (
+    <div className="min-h-screen flex justify-center items-center bg-slate-100 dark:bg-slate-900 px-4">
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow w-80">
+
+        <h2 className="text-xl font-bold mb-4 text-center text-slate-800 dark:text-white">
+          Set New Password 🔐
         </h2>
 
         <input
           type="password"
-          placeholder="Old Password"
-          value={oldPass}
-          onChange={(e) => setOldPass(e.target.value)}
-          className="w-full mb-3 p-2 border rounded"
-        />
-
-        <input
-          type="password"
-          placeholder="New Password"
+          placeholder="Enter new password"
           value={newPass}
           onChange={(e) => setNewPass(e.target.value)}
-          className="w-full mb-3 p-2 border rounded"
+          className="w-full mb-3 p-2 border rounded dark:bg-slate-700 dark:text-white"
         />
 
         <button
           onClick={handleReset}
-          className="w-full bg-blue-500 text-white py-2 rounded"
+          disabled={loading}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded disabled:opacity-50"
         >
-          Update Password
+          {loading ? "Updating..." : "Update Password"}
         </button>
 
       </div>

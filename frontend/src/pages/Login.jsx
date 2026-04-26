@@ -3,7 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { auth } from "../firebase";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail
+} from "firebase/auth";
 
 const Login = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -19,23 +22,28 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  // 🔥 FORGOT PASSWORD FUNCTION
+  // 🔥 EMAIL RESET FUNCTION
   const handleForgotPassword = async () => {
     if (!data.email) {
-      toast.error("Please enter your email first ❗");
+      toast.error("Please enter your email ❗");
       return;
     }
 
     try {
-      await sendPasswordResetEmail(auth, data.email.trim());
-      toast.success("Check your email to reset password 📬");
+     await sendPasswordResetEmail(auth, data.email.trim(), {
+      url: "https://ai-predictor-l5ui.vercel.app/reset-password"
+        });
+      console.log("EMAIL SENT ✅");
+      toast.success("Reset link sent to your email 📩");
     } catch (err) {
+      console.log(err.code);
+
       if (err.code === "auth/user-not-found") {
         toast.error("User not found ❌");
       } else if (err.code === "auth/invalid-email") {
         toast.error("Invalid email ❌");
       } else {
-        toast.error("Something went wrong ❌");
+        toast.error("Failed to send email ❌");
       }
     }
   };
@@ -61,7 +69,7 @@ const Login = () => {
       navigate(from);
 
     } catch (err) {
-      console.log("Firebase Error:", err.code);
+      console.log("Login error:", err.code);
 
       if (err.code === "auth/invalid-credential") {
         toast.error("Invalid email or password ❌");
@@ -69,12 +77,8 @@ const Login = () => {
         toast.error("User not found ❌");
       } else if (err.code === "auth/wrong-password") {
         toast.error("Wrong password ❌");
-      } else if (err.code === "auth/invalid-email") {
-        toast.error("Invalid email format ❌");
-      } else if (err.code === "auth/too-many-requests") {
-        toast.error("Too many attempts, try later ⏳");
       } else {
-        toast.error(err.message || "Login failed ❌");
+        toast.error("Login failed ❌");
       }
     }
 
@@ -91,7 +95,6 @@ const Login = () => {
         className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 sm:p-8"
       >
 
-        {/* Title */}
         <h2 className="text-3xl font-bold text-center mb-2 text-slate-800 dark:text-white">
           Welcome Back 👋
         </h2>
@@ -128,13 +131,8 @@ const Login = () => {
             {showPassword ? "Hide" : "Show"}
           </span>
         </div>
-       <p
-  onClick={() => navigate("/reset-password")}
-  className="text-right text-sm text-blue-500 cursor-pointer mb-4"
->
-  Reset Password
-</p>
-        {/* 🔥 FORGOT PASSWORD UI */}
+
+        {/* 🔥 EMAIL RESET BUTTON */}
         <p
           onClick={handleForgotPassword}
           className="text-right text-sm text-blue-500 cursor-pointer mb-4 hover:underline"
@@ -162,7 +160,7 @@ const Login = () => {
             Signup
           </span>
         </p>
-        
+
       </motion.form>
     </div>
   );
