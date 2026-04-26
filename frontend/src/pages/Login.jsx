@@ -128,7 +128,12 @@ const Login = () => {
             {showPassword ? "Hide" : "Show"}
           </span>
         </div>
-
+       <p
+  onClick={() => navigate("/reset-password")}
+  className="text-right text-sm text-blue-500 cursor-pointer mb-4"
+>
+  Reset Password
+</p>
         {/* 🔥 FORGOT PASSWORD UI */}
         <p
           onClick={handleForgotPassword}
@@ -157,7 +162,7 @@ const Login = () => {
             Signup
           </span>
         </p>
-
+        
       </motion.form>
     </div>
   );

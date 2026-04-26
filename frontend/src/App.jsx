@@ -45,6 +45,7 @@ function AnimatedRoutes() {
         <Route path="/result" element={<PageWrapper><Result /></PageWrapper>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
 
         {/* 🔐 Protected Routes */}
