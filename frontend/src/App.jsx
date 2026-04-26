@@ -116,7 +116,7 @@ function App() {
 
       <Navbar user={user} /> {/* 🔥 pass user */}
 
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" limit={2} />
 
       <AnimatedRoutes />
 

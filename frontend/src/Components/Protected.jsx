@@ -18,14 +18,16 @@ const Protected = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // ⏳ wait until auth loads
+  // ⏳ wait
   if (loading) {
     return <div className="text-center mt-20">Loading...</div>;
   }
 
   // ❌ not logged in
   if (!user) {
-    toast.error("Please login first 🔐");
+    if (!toast.isActive("login-error")) {
+      toast.error("Please login first 🔒", { id: "login-error" });
+    }
 
     return (
       <Navigate
