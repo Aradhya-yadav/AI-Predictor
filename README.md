@@ -38,8 +38,18 @@ npm run dev
 ---
 
 ## 🌐 Live Demo
+## 🌐 Live Demo
 
-👉 https://your-vercel-link.vercel.app
+🔗 https://ai-predictor-l5ui.vercel.app
+
+Try it:
+
+* Signup / Login
+* Enter prediction data
+* View result & download PDF
+* Check dashboard & history
+* Update profile
+
 
 ## 👨‍💻 Author
 
