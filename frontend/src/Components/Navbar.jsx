@@ -2,13 +2,12 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth"; // ✅ ADDED
+import { onAuthStateChanged } from "firebase/auth";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ FIXED (reactive user)
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -23,7 +22,6 @@ const Navbar = () => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [dark, setDark] = useState(false);
 
-  // 🌙 Load theme
   useEffect(() => {
     const saved = localStorage.getItem("theme");
 
@@ -36,12 +34,10 @@ const Navbar = () => {
     }
   }, []);
 
-  // 🔒 Disable scroll when menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
   }, [menuOpen]);
 
-  // 🌙 Toggle theme
   const toggleDark = () => {
     if (dark) {
       document.documentElement.classList.remove("dark");
@@ -72,7 +68,6 @@ const Navbar = () => {
       animate={{ y: 0, opacity: 1 }}
       className="bg-white dark:bg-slate-900 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md"
     >
-      {/* Logo */}
       <h1 className="text-xl font-bold text-blue-500">
         AI Predictor
       </h1>
@@ -87,7 +82,6 @@ const Navbar = () => {
         <Link className={isActive("/about")} to="/about">About</Link>
         <Link className={isActive("/contact")} to="/contact">Contact</Link>
 
-        {/* Theme */}
         <button
           onClick={toggleDark}
           className="bg-gray-200 dark:bg-slate-700 px-3 py-1 rounded text-sm"
@@ -95,7 +89,6 @@ const Navbar = () => {
           {dark ? "🌙" : "☀️"}
         </button>
 
-        {/* Profile / Login */}
         {user ? (
           <div className="relative">
             <div
@@ -121,13 +114,21 @@ const Navbar = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 bg-white dark:bg-slate-800 rounded shadow w-32 z-50"
+                  className="absolute right-0 mt-2 bg-white dark:bg-slate-800 rounded shadow w-40 z-50"
                 >
                   <Link
                     to="/profile"
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700"
                   >
                     Profile
+                  </Link>
+
+                  {/* 🔥 ADDED */}
+                  <Link
+                    to="/reset-password"
+                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  >
+                    Reset Password
                   </Link>
 
                   <button
@@ -175,6 +176,13 @@ const Navbar = () => {
             <Link onClick={closeMenu} to="/history">History</Link>
             <Link onClick={closeMenu} to="/about">About</Link>
             <Link onClick={closeMenu} to="/contact">Contact</Link>
+
+            {/* 🔥 ADDED */}
+            {user && (
+              <Link onClick={closeMenu} to="/reset-password">
+                Reset Password
+              </Link>
+            )}
 
             <button onClick={toggleDark}>
               {dark ? "🌙 Dark" : "☀️ Light"}
