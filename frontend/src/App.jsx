@@ -19,6 +19,7 @@ import Result from "./pages/Result";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup"; // 🔥 missing था
 import Protected from "./Components/Protected";
+import ResetPassword from "./pages/ResetPassword";
 
 // 🔥 Scroll to top
 function ScrollToTop() {
