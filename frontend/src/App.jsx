@@ -21,6 +21,9 @@ import Signup from "./pages/Signup"; // 🔥 missing था
 import Protected from "./Components/Protected";
 import ResetPassword from "./pages/ResetPassword";
 
+
+
+
 // 🔥 Scroll to top
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -47,7 +50,7 @@ function AnimatedRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
+        <Route path="/profile" element={<Profile />} />
 
         {/* 🔐 Protected Routes */}
         <Route 

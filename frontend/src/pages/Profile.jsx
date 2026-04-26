@@ -33,11 +33,15 @@ const Profile = () => {
     try {
       await updateProfile(auth.currentUser, {
         displayName: name,
-        photoURL: photo,
+        // 🔥 FIX: fallback avatar if photo empty
+        photoURL: photo || `https://ui-avatars.com/api/?name=${name}`
       });
 
       toast.success("Profile updated successfully 🎉");
       setEditing(false);
+
+      // 🔥 FIX: navbar refresh
+      window.location.reload();
 
     } catch (err) {
       toast.error("Update failed ❌");
@@ -57,7 +61,11 @@ const Profile = () => {
         {/* Profile Image */}
         <div className="flex flex-col items-center mb-4">
           <img
-            src={photo || "https://ui-avatars.com/api/?name=User"}
+            // 🔥 FIX: dynamic fallback
+            src={
+              photo ||
+              `https://ui-avatars.com/api/?name=${name || "User"}`
+            }
             alt="profile"
             className="w-24 h-24 rounded-full border shadow"
           />
@@ -94,6 +102,7 @@ const Profile = () => {
             value={photo}
             disabled={!editing}
             onChange={(e) => setPhoto(e.target.value)}
+            placeholder="Paste image URL or leave empty"
             className="w-full mt-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
           />
         </div>
@@ -117,7 +126,11 @@ const Profile = () => {
             </button>
 
             <button
-              onClick={() => setEditing(false)}
+              onClick={() => {
+                setEditing(false);
+                setName(user?.displayName || "");
+                setPhoto(user?.photoURL || "");
+              }}
               className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg"
             >
               Cancel
