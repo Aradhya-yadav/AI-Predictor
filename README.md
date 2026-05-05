@@ -36,8 +36,6 @@ npm run dev
 ```
 
 ---
-
-## 🌐 Live Demo
 ## 🌐 Live Demo
 
 🔗 https://ai-predictor-l5ui.vercel.app
@@ -49,7 +47,6 @@ Try it:
 * View result & download PDF
 * Check dashboard & history
 * Update profile
-
 
 ## 👨‍💻 Author
 
