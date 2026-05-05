@@ -17,9 +17,9 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Result from "./pages/Result";
 import Profile from "./pages/Profile";
-import Signup from "./pages/Signup"; // 🔥 missing था
+import Signup from "./pages/Signup";
 import Protected from "./Components/Protected";
-import ResetPassword from "./pages/ResetPassword";
+
 
 // 🔥 Scroll to top
 function ScrollToTop() {
@@ -46,7 +46,6 @@ function AnimatedRoutes() {
         <Route path="/result" element={<PageWrapper><Result /></PageWrapper>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* 🔐 Protected Routes */}
         <Route 

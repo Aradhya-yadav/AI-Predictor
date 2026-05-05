@@ -120,15 +120,7 @@ const Navbar = () => {
                     className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700"
                   >
                     Profile
-                  </Link>
-
-                  {/* 🔥 ADDED */}
-                  <Link
-                    to="/reset-password"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-700"
-                  >
-                    Reset Password
-                  </Link>
+                    </Link>
 
                   <button
                     onClick={handleLogout}
@@ -175,13 +167,6 @@ const Navbar = () => {
             <Link onClick={closeMenu} to="/history">History</Link>
             <Link onClick={closeMenu} to="/about">About</Link>
             <Link onClick={closeMenu} to="/contact">Contact</Link>
-
-            {/* 🔥 ADDED */}
-            {user && (
-              <Link onClick={closeMenu} to="/reset-password">
-                Reset Password
-              </Link>
-            )}
 
             <button onClick={toggleDark}>
               {dark ? "🌙 Dark" : "☀️ Light"}
