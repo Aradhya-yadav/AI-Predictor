@@ -63,7 +63,7 @@ const Footer = () => {
 
             <motion.a
               whileHover={{ scale: 1.2 }}
-              href="https://linkedin.com/in/aradhya-yadav"
+              href="https://www.linkedin.com/in/aradhya-yadav-645910373/"
               target="_blank"
               className="hover:text-blue-600"
             >
