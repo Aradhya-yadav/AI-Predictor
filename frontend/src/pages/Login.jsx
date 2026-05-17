@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { auth } from "../firebase";
+
+import { auth, googleProvider } from "../firebase";
+
 import {
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  signInWithPopup
 } from "firebase/auth";
 
 const Login = () => {
@@ -22,7 +25,7 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-  // 🔥 EMAIL RESET FUNCTION
+  // 🔥 FORGOT PASSWORD
   const handleForgotPassword = async () => {
     if (!data.email) {
       toast.error("Please enter your email ❗");
@@ -30,11 +33,12 @@ const Login = () => {
     }
 
     try {
-     await sendPasswordResetEmail(auth, data.email.trim(), {
-      url: "https://ai-predictor-l5ui.vercel.app/reset-password"
-        });
-      console.log("EMAIL SENT ✅");
+      await sendPasswordResetEmail(auth, data.email.trim(), {
+        url: "https://ai-predictor-l5ui.vercel.app/reset-password"
+      });
+
       toast.success("Reset link sent to your email 📩");
+
     } catch (err) {
       console.log(err.code);
 
@@ -48,6 +52,7 @@ const Login = () => {
     }
   };
 
+  // 🔥 EMAIL LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,6 +71,7 @@ const Login = () => {
       );
 
       toast.success("Login successful 🎉");
+
       navigate(from);
 
     } catch (err) {
@@ -83,6 +89,22 @@ const Login = () => {
     }
 
     setLoading(false);
+  };
+
+  // 🔥 GOOGLE LOGIN
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+
+      toast.success("Google login successful 🎉");
+
+      navigate(from);
+
+    } catch (err) {
+      console.log(err);
+
+      toast.error("Google login failed ❌");
+    }
   };
 
   return (
@@ -132,7 +154,7 @@ const Login = () => {
           </span>
         </div>
 
-        {/* 🔥 EMAIL RESET BUTTON */}
+        {/* Forgot Password */}
         <p
           onClick={handleForgotPassword}
           className="text-right text-sm text-blue-500 cursor-pointer mb-4 hover:underline"
@@ -140,7 +162,7 @@ const Login = () => {
           Forgot Password?
         </p>
 
-        {/* Button */}
+        {/* Login Button */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           disabled={loading}
@@ -149,6 +171,32 @@ const Login = () => {
         >
           {loading ? "Logging in..." : "Login"}
         </motion.button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-[1px] bg-gray-300"></div>
+
+          <span className="text-sm text-gray-500">
+            OR
+          </span>
+
+          <div className="flex-1 h-[1px] bg-gray-300"></div>
+        </div>
+
+            {/* Google Login */}
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+             className="w-full flex items-center justify-center gap-3 border border-gray-300 dark:border-slate-600 py-3 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-slate-700 transition">
+
+                <img
+                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                 alt="google"
+                 className="w-5 h-5"
+                 />
+
+              Continue with Google
+             </button>
 
         {/* Signup */}
         <p className="text-center mt-4 text-sm text-gray-500">
