@@ -45,6 +45,7 @@ const Dashboard = () => {
 
     } catch (err) {
       console.error("ERROR:", err);
+      toast.dismiss();
       toast.error("Failed to load data ❌");
     } finally {
       setLoading(false);

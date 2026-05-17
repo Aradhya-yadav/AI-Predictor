@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 
 // 🔥 Firebase
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
+
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
+
 import History from "./pages/History";
 import Home from "./pages/Home";
 import Predict from "./pages/Predict";
@@ -18,8 +19,8 @@ import Login from "./pages/Login";
 import Result from "./pages/Result";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
-import Protected from "./Components/Protected";
 
+import Protected from "./Components/Protected";
 
 // 🔥 Scroll to top
 function ScrollToTop() {
@@ -38,41 +39,89 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        
-        <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
-        <Route path="/predict" element={<PageWrapper><Predict /></PageWrapper>} />
-        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
-        <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
-        <Route path="/result" element={<PageWrapper><Result /></PageWrapper>} />
+
+        <Route
+          path="/"
+          element={
+            <PageWrapper>
+              <Home />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/predict"
+          element={
+            <PageWrapper>
+              <Predict />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/about"
+          element={
+            <PageWrapper>
+              <About />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <PageWrapper>
+              <Contact />
+            </PageWrapper>
+          }
+        />
+
+        <Route
+          path="/result"
+          element={
+            <PageWrapper>
+              <Result />
+            </PageWrapper>
+          }
+        />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/signup" element={<Signup />} />
 
         {/* 🔐 Protected Routes */}
-        <Route 
-          path="/dashboard" 
+
+        <Route
+          path="/dashboard"
           element={
             <Protected>
-              <PageWrapper><Dashboard /></PageWrapper>
+              <PageWrapper>
+                <Dashboard />
+              </PageWrapper>
             </Protected>
-          } 
+          }
         />
 
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <Protected>
-              <PageWrapper><Profile /></PageWrapper>
+              <PageWrapper>
+                <Profile />
+              </PageWrapper>
             </Protected>
-          } 
+          }
         />
 
-        <Route 
-          path="/history" 
+        <Route
+          path="/history"
           element={
             <Protected>
-              <PageWrapper><History /></PageWrapper>
+              <PageWrapper>
+                <History />
+              </PageWrapper>
             </Protected>
-          } 
+          }
         />
 
       </Routes>
@@ -113,9 +162,7 @@ function App() {
     <Router>
       <ScrollToTop />
 
-      <Navbar user={user} /> {/* 🔥 pass user */}
-
-      <Toaster position="top-center" limit={2} />
+      <Navbar user={user} />
 
       <AnimatedRoutes />
 

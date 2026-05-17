@@ -24,11 +24,13 @@ const Contact = () => {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.message) {
+      toast.dismiss();
       toast.error("Please fill all fields ❗");
       return;
     }
 
     if (!isValidEmail(form.email)) {
+      toast.dismiss();
       toast.error("Enter a valid email ❌");
       return;
     }
@@ -46,6 +48,7 @@ const Contact = () => {
       setForm({ name: "", email: "", message: "" });
 
     } catch (err) {
+      toast.dismiss();
       toast.error("Failed to send message ❌");
     }
 

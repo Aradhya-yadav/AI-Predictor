@@ -26,6 +26,7 @@ const Protected = ({ children }) => {
   // ❌ not logged in
   if (!user) {
     if (!toast.isActive("login-error")) {
+      toast.dismiss();
       toast.error("Please login first 🔒", { id: "login-error" });
     }
 

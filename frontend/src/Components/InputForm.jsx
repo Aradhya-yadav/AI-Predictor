@@ -37,6 +37,7 @@ const InputForm = ({ onSubmit }) => {
     }
 
     if (hours < 0 || attendance < 0 || marks < 0) {
+      toast.dismiss();
       toast.error("Values cannot be negative ❌");
       return;
     }
@@ -47,6 +48,7 @@ const InputForm = ({ onSubmit }) => {
       await onSubmit(formData); // 🔥 wait for backend
 
     } catch (err) {
+      toast.dismiss();
       toast.error("Prediction failed ❌");
     }
 

@@ -24,6 +24,7 @@ const Profile = () => {
 
   const handleUpdate = async () => {
     if (!name) {
+      toast.dismiss();
       toast.error("Name cannot be empty ❌");
       return;
     }
@@ -44,6 +45,7 @@ const Profile = () => {
       window.location.reload();
 
     } catch (err) {
+      toast.dismiss();
       toast.error("Update failed ❌");
     }
 

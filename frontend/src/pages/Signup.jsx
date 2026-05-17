@@ -29,16 +29,19 @@ const Signup = () => {
     e.preventDefault();
 
     if (!data.name || !data.email || !data.password || !data.confirmPassword) {
+      toast.dismiss();
       toast.error("All fields required ❗");
       return;
     }
 
     if (data.password.length < 6) {
+      toast.dismiss();
       toast.error("Password must be at least 6 characters ❗");
       return;
     }
 
     if (data.password !== data.confirmPassword) {
+      toast.dismiss();
       toast.error("Passwords do not match ❌");
       return;
     }
@@ -71,12 +74,16 @@ const Signup = () => {
       console.log("Signup error:", err.code);
 
       if (err.code === "auth/email-already-in-use") {
+        toast.dismiss();
         toast.error("Email already exists ❌");
       } else if (err.code === "auth/invalid-email") {
+        toast.dismiss();
         toast.error("Invalid email ❌");
       } else if (err.code === "auth/weak-password") {
+        toast.dismiss();
         toast.error("Weak password ❌");
       } else {
+        toast.dismiss();
         toast.error("Signup failed ❌");
       }
     }

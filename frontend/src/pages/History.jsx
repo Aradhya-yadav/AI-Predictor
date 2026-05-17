@@ -49,6 +49,7 @@ const History = () => {
       setHistory(formatted);
     } catch (err) {
       console.error("ERROR:", err);
+      toast.dismiss();
       toast.error("Failed to load history ❌");
     } finally {
       setLoading(false);

@@ -28,6 +28,7 @@ const Login = () => {
   // 🔥 FORGOT PASSWORD
   const handleForgotPassword = async () => {
     if (!data.email) {
+      toast.dismiss();
       toast.error("Please enter your email ❗");
       return;
     }
@@ -43,10 +44,13 @@ const Login = () => {
       console.log(err.code);
 
       if (err.code === "auth/user-not-found") {
+        toast.dismiss();
         toast.error("User not found ❌");
       } else if (err.code === "auth/invalid-email") {
+        toast.dismiss();
         toast.error("Invalid email ❌");
       } else {
+        toast.dismiss();
         toast.error("Failed to send email ❌");
       }
     }
@@ -57,6 +61,7 @@ const Login = () => {
     e.preventDefault();
 
     if (!data.email || !data.password) {
+      toast.dismiss();
       toast.error("All fields are required ❗");
       return;
     }
@@ -78,12 +83,16 @@ const Login = () => {
       console.log("Login error:", err.code);
 
       if (err.code === "auth/invalid-credential") {
+        toast.dismiss();
         toast.error("Invalid email or password ❌");
       } else if (err.code === "auth/user-not-found") {
+        toast.dismiss();
         toast.error("User not found ❌");
       } else if (err.code === "auth/wrong-password") {
+        toast.dismiss();
         toast.error("Wrong password ❌");
       } else {
+        toast.dismiss();
         toast.error("Login failed ❌");
       }
     }
@@ -102,7 +111,7 @@ const Login = () => {
 
     } catch (err) {
       console.log(err);
-
+       toast.dismiss();
       toast.error("Google login failed ❌");
     }
   };

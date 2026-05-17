@@ -20,6 +20,7 @@ const Predict = () => {
     try {
       // 🔐 Check login
       if (!auth.currentUser) {
+        toast.dismiss();
         toast.error("Please login first ❌");
         setLoading(false);
         return;
@@ -59,6 +60,7 @@ const Predict = () => {
 
     } catch (err) {
       console.error("ERROR:", err);
+      toast.dismiss();
       toast.error(err.response?.data?.error || "Something went wrong ❌");
     }
 
